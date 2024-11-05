@@ -1,0 +1,12 @@
+<div class="todo-items">    
+    <ol>
+
+        <li *ngFor="let item of toDoItems">
+            <label>
+                <input type="checkbox" disabled />
+                <span>{{item.title}}</span>
+            </label>
+        </li>
+
+    </ol>
+</div>

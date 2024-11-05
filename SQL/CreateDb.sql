@@ -1,0 +1,78 @@
+CREATE TABLE Person (
+    Id INT NOT NULL IDENTITY(1,1),
+    [Name] NVARCHAR(255) NOT NULL,
+    CONSTRAINT PK_Person PRIMARY KEY (Id)
+);
+
+CREATE TABLE [Order](
+	Id INT NOT NULL IDENTITY(1,1),
+	PersonId INT NOT NULL,
+	[Date] DATETIME NOT NULL,	
+	CONSTRAINT PK_Order PRIMARY KEY (Id),
+	CONSTRAINT FK_Person FOREIGN KEY (PersonId) REFERENCES Person(Id)
+);
+
+CREATE TABLE Product(
+	Id INT NOT NULL IDENTITY(1,1),
+	[Name] NVARCHAR(500) NOT NULL,
+	Cost DECIMAL(19,2) NOT NULL,
+	CONSTRAINT PK_Product PRIMARY KEY (Id)
+);
+
+CREATE TABLE OrderItem(
+	Id INT NOT NULL IDENTITY(1,1),
+	OrderId INT NOT NULL,
+	ProductId INT NOT NULL,
+	CostAtTimeOfSale DECIMAL(19,2) NOT NULL,
+	NumberOfItems INT NOT NULL,
+	CONSTRAINT PK_OrderItem PRIMARY KEY (Id),
+	CONSTRAINT FK_Order FOREIGN KEY (OrderId) REFERENCES [Order](Id),
+	CONSTRAINT FK_Product FOREIGN KEY (ProductId) REFERENCES Product(Id)
+);
+
+INSERT INTO Person VALUES ('Steve');
+DECLARE @steveId INT = SCOPE_IDENTITY();
+
+INSERT INTO Person VALUES ('Tom');
+DECLARE @tomId INT = SCOPE_IDENTITY();
+
+INSERT INTO Person VALUES ('Gary');
+DECLARE @garyId INT = SCOPE_IDENTITY();
+
+
+INSERT INTO Product VALUES ('Monitor', 200);
+DECLARE @monitorId INT = SCOPE_IDENTITY();
+
+INSERT INTO Product VALUES ('CPU', 150);
+DECLARE @CPUId INT = SCOPE_IDENTITY();
+
+INSERT INTO Product VALUES ('RAM', 50);
+DECLARE @RAMId INT = SCOPE_IDENTITY();
+
+INSERT INTO Product VALUES ('Motherboard', 100);
+DECLARE @MotherboardId INT = SCOPE_IDENTITY();
+
+INSERT INTO [Order] VALUES (@tomId, '2019-12-05');
+DECLARE @tomOrder1 INT = SCOPE_IDENTITY();
+
+INSERT INTO [Order] VALUES (@tomId, '2019-12-20');
+DECLARE @tomOrder2 INT = SCOPE_IDENTITY();
+
+INSERT INTO [Order] VALUES (@steveId, '2019-12-06');
+DECLARE @steveOrder INT = SCOPE_IDENTITY();
+
+INSERT INTO [Order] VALUES (@garyId, '2019-12-07');
+DECLARE @garyOrder INT = SCOPE_IDENTITY();
+
+INSERT INTO OrderItem VALUES (@tomOrder1, @CPUId, 170.00, 2);
+INSERT INTO OrderItem VALUES (@tomOrder1, @MotherboardId, 100.00, 2);
+
+INSERT INTO OrderItem VALUES (@tomOrder2, @RAMId, 170.00, 2);
+
+INSERT INTO OrderItem VALUES (@steveOrder, @CPUId, 150.00, 1);
+INSERT INTO OrderItem VALUES (@steveOrder, @MotherboardId, 100.00, 1);
+INSERT INTO OrderItem VALUES (@steveOrder, @RAMId, 50.00, 2);
+INSERT INTO OrderItem VALUES (@steveOrder, @monitorId, 180.50, 2);
+
+INSERT INTO OrderItem VALUES (@garyOrder, @RAMId, 50.00, 2);
+INSERT INTO OrderItem VALUES (@garyOrder, @monitorId, 180.50, 3);
